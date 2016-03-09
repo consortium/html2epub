@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+    <rewriteURI uriStartString="http://this.transpect.io/" rewritePrefix="../"/>
+    <nextCatalog catalog="../epubtools/xmlcatalog/catalog.xml"/>
+    <nextCatalog catalog="../xproc-util/xmlcatalog/catalog.xml"/>
+    <nextCatalog catalog="../xslt-util/xmlcatalog/catalog.xml"/>
+    <nextCatalog catalog="../css-tools/xmlcatalog/catalog.xml"/>
+    <nextCatalog catalog="../schematron/xmlcatalog/catalog.xml"/>
+    <nextCatalog catalog="../htmlreports/xmlcatalog/catalog.xml"/>
+    <nextCatalog catalog="../cascade/xmlcatalog/catalog.xml"/>
+    <nextCatalog catalog="../calabash/extensions/transpect/xmlcatalog/catalog.xml"/>
+</catalog>

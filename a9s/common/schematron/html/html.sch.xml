@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://purl.oclc.org/dsdl/schematron" 
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:dbk="http://docbook.org/ns/docbook"
+  xmlns:c="http://www.w3.org/ns/xproc-step"
+  xmlns:tr="http://transpect.io"
+  xmlns:cx="http://xmlcalabash.com/ns/extensions"
+  tr:rule-family="html"
+  queryBinding="xslt2">
+  <ns prefix="html" uri="http://www.w3.org/1999/xhtml"/>
+  <ns prefix="tr" uri="http://transpect.io" />
+  
+  <xsl:include href="http://transpect.io/xslt-util/resolve-uri/xsl/resolve-uri.xsl"/>
+  <!-- Loads the XHTML document as unparsed text -->
+  <let name="unparsed" value="unparsed-text(document-uri(.))"/>
+  <!-- unparsed - comment -->
+  <let name="unparsed2" value="replace($unparsed, '&lt;!--.*?--&gt;', '', 's')"/>
+  <!-- unparsed - comment - cdata -->
+  <let name="unparsed3" value="replace($unparsed2, '&lt;!\[CDATA\[.*?\]\]&gt;', '', 's')"/>
+  <!-- unparsed - comment - cdata - pi -->
+  <let name="unparsed4" value="if (starts-with($unparsed, '&lt;?xml')) then concat(substring-before($unparsed3, '?&gt;'), '?&gt;', replace($unparsed3, '&lt;\?.*?\?&gt;', '', 's')) else replace($unparsed3, '&lt;\?.*?\?&gt;', '', 's')"/>
+ 
+  <pattern id="validating_declarations">
+    <rule context="html:html">
+      <assert test="@property ='http://scholarly-html.org/schtml'" id="xml_declaration" role="warning">Your HTML needs a property attribute with the URI identifier 'http://scholarly-html.org/schtml' as the value.</assert>
+      <let name="declaration" value="if (starts-with($unparsed, '&lt;?xml')) then concat(substring-before($unparsed, '?>'), '?>') else ''"/>
+      <assert test="starts-with($unparsed, '&lt;?xml')" id="xml_declaration" role="warning">Your XHTML document must start with an
+        XML declaration.</assert>
+      <assert
+        test="not(starts-with($unparsed, '&lt;?xml') and not(matches($declaration, '1.0')))" id="xml_declaration_version" role="warning">You
+        must use XML version 1.0.</assert>
+      <assert
+        test="not(starts-with($unparsed, '&lt;?xml') and not(matches($declaration, 'utf-8|UTF-8')))"
+         id="xml_declaration_encoding" role="warning"
+        >You must use XML encoding="UTF-8" explicitly.</assert>
+      <assert
+        test="not(starts-with($unparsed, '&lt;?xml') and matches($declaration, 'standalone'))"
+         id="xml_declaration_standalone" role="warning">The
+        standalone pseudo attribute must not be used.</assert>
+      <assert
+        test="not(matches($declaration, 'utf-8|UTF-8') and not(matches($declaration, 'standalone')) and not(string-length($declaration) eq 38))"
+         id="xml_declaration_ws" role="warning"
+        >The XML declaration must not contain insignificant whitespace.</assert>
+      <assert test="matches($unparsed4, '&lt;!DOCTYPE')" id="doctype_declaration" role="warning">The DOCTYPE declaration is missing.</assert>
+    </rule>
+  </pattern>
+  
+<!--  <pattern id="empty_headline2">
+    <rule context="html:h2">
+      <report test="text()" id="ha_text" role="error">
+       this headline has text, wow.
+      </report>
+    </rule>
+  </pattern>
+
+  <pattern id="existing_elements_in_head">
+    <rule context="html:head">
+      <assert test="not(node()/local-name() = 'title')" id="title_element" role="error">
+        There is no title in the head element. </assert>
+      <assert test="not(html:meta[@name = 'DC.creator'])" id="meta_creator_element" role="error">
+         There is no meta element to set one or more creators. </assert>
+      <assert test="not(html:meta[@name = 'DC.date'])" id="meta_date_element" role="error">
+         There is no meta element to set the date. </assert>
+    </rule>
+  </pattern>
+  
+  <pattern id="existing_creators_in_meta_element">
+    <rule context="html:meta[@name = 'DC.creator']" id="creators_in_meta_element" role="error">
+      <assert test="not(node()/local-name() = 'title')" id="title_element" role="error">
+        There is no title in the head element. </assert>
+    </rule>
+  </pattern>
+  
+  <pattern id="existing_text_title">
+    <rule context="html:head/html:title">
+      <assert test="not(text())" id="title_text" role="error" >
+        There is no text in the title element.
+      </assert>
+    </rule>
+  </pattern>
+  
+  <pattern id="existing_element_h1">
+    <rule context="html:section[@id = 'main-content']">
+      <assert test="node()/local-name() = 'h1'" id="title_element_h1" role="error" >
+        There should be a h1 element representing the book title.
+      </assert>
+      
+    </rule>
+  </pattern>
+
+  <pattern id="existing_text_h1">
+    <rule context="html:section[@id = 'main-content']/html:h1">
+      <assert test="not(normalize-space(.) = '')" id="title_text_h1" role="error" >
+        There should be text in the h1 element representing the book title.
+      </assert>
+    </rule>
+  </pattern>-->
+  
+<!--  scholarly HTML-->
+  <pattern id="check_body">
+    <rule context="html:body">
+      <assert test="html:*[@property = 'http://purl.org/dc/terms/title']" id="book_title" role="error">
+        The book title is missing.
+        There should be a element with a property attribute and the value "http://purl.org/dc/terms/title" to set up the book title.
+      </assert>
+      <assert test="html:*[@property = 'http://purl.org/dc/terms/creator']" id="book_creator" role="error">
+        The author is missing.
+        There should be a element with a property attribute and the value "http://purl.org/dc/terms/creator" to set up the author.
+      </assert>
+      <assert test="html:*[@type = 'xsd:date']" id="book_date" role="error">
+        The date is missing.
+        There should be a element with a type attribute and the value "xsd:date" to set up the date.
+      </assert>
+    </rule>
+  </pattern>
+  
+  <pattern id="check_meta_content">
+    <rule context="*[@property]">
+      <assert test="text() or node()/text()" id="meta_content" role="error" >
+        There should be text in the element.
+      </assert>
+    </rule>
+  </pattern>  
+  
+</schema>
+

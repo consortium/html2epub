@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://transpect.io/cascade/schema/cascade.rng" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<conf xmlns="http://transpect.io" paths-xsl-uri="http://transpect.io/cascade/xsl/paths.xsl">
+  <!--  <cascade>
+    <reserved name="schematron"/>
+        <clade role="" name=""></clade>
+    </cascade>-->
+</conf>
