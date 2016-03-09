@@ -1,2 +1,2 @@
 # html2epub
-HTML 2 EPUB conversion
+XProc libraries to convert EPUB from XHTML5
