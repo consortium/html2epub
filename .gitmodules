@@ -1,0 +1,24 @@
+[submodule "calabash"]
+	path = calabash
+	url = https://github.com/transpect/calabash-frontend.git
+[submodule "cascade"]
+	path = cascade
+	url = https://github.com/transpect/cascade.git
+[submodule "epubtools"]
+	path = epubtools
+	url = https://github.com/transpect/epubtools.git
+[submodule "htmlreports"]
+	path = htmlreports
+	url = https://github.com/transpect/htmlreports.git
+[submodule "schematron"]
+	path = schematron
+	url = https://github.com/transpect/schematron.git
+[submodule "xproc-util"]
+	path = xproc-util
+	url = https://github.com/transpect/xproc-util.git
+[submodule "xslt-util"]
+	path = xslt-util
+	url = https://github.com/transpect/xslt-util.git
+[submodule "css-tools"]
+	path = css-tools
+	url = https://github.com/transpect/css-tools.git
