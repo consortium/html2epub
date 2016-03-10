@@ -7,11 +7,10 @@
     xmlns:tr="http://transpect.io"
     version="1.0"
     name="html2epub">
-  <!--
+  
     <p:output port="result" primary="true">
-      <!-\-<p:pipe port="result" step="html52epub"></p:pipe>-\->
-      <p:empty></p:empty>
-    </p:output>-->
+      <p:pipe port="result" step="html52epub"></p:pipe>
+    </p:output>
     <p:output port="htmlreport" sequence="true">
       <p:pipe port="result" step="patch"></p:pipe>
     </p:output>
@@ -90,12 +89,15 @@
           <p:with-option name="filename" select="$file"></p:with-option>
         </tr:file-uri>
       </p:when>
-        <p:otherwise>
-          <cx:message>
-            <p:with-option name="log" select="'error'"></p:with-option>
-            <p:with-option name="message" select="'Input needs to be either an HTML document or a ZIP container'"></p:with-option>
-          </cx:message>
-        </p:otherwise>
+      <p:otherwise>
+        <p:error code="wrong-format">
+          <p:input port="source">
+            <p:inline>
+              <message>Wrong document format. Only single or zipped HTML files allowed.</message>
+            </p:inline>
+          </p:input>
+        </p:error>
+      </p:otherwise>
       </p:choose>
     </p:group>
 
@@ -165,7 +167,7 @@
         <p:with-option name="active" select="$debug"/>
         <p:with-option name="base-uri" select="$debug-dir-uri"/>
       </tr:store-debug>
-  <!--
+  
     <epub:convert name="html52epub">
         <p:input port="conf">
             <p:document href="http://this.transpect.io/conf/hierarchy.xml"></p:document>
@@ -179,8 +181,8 @@
         <p:with-option name="status-dir-uri" select="$status-dir-uri"></p:with-option>
         <p:with-option name="debug-dir-uri" select="$debug-dir-uri"></p:with-option>
     </epub:convert>
-  -->  
-    <p:sink></p:sink>
+    
+    <p:sink/>
   
     <tr:patch-svrl name="patch">
       <p:input port="source">
@@ -196,16 +198,7 @@
         <p:pipe port="result" step="paths"/>
       </p:input>
     </tr:patch-svrl>
-  
-<!--    <tr:store-debug extension="html">
-      <p:input port="source">
-        <p:pipe port="result" step="patch"/>
-      </p:input>
-      <p:with-option name="pipeline-step" select="concat(replace($file, '^.+/|\..+$', ''), '_htmlreport')"/>
-      <p:with-option name="active" select="$debug"/>
-      <p:with-option name="base-uri" select="$debug-dir-uri"/>
-    </tr:store-debug>--> 
-  
+
     <p:sink/>
   
 </p:declare-step>
