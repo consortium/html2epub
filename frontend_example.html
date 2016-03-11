@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <script type="text/javascript" src="jquery.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                
+                function basicHTTPAuthString(user, passwd){
+                  var token = user + ":" + passwd;
+                  var hash = btoa(token);
+                  return "Basic " + hash;
+                };
+            
+                $("form").on('submit', function(event){
+                event.preventDefault();
+                    var formData = new FormData($(this)[0]),
+                    filename = $('input')[0].value.replace(/^.*\\/, "");
+                    formData.append('type','html2epub');
+                    formData.append('add_params', '');
+                   console.log('jo', filename, $(this)[0]);
+                    $.ajax({
+                      url: 'https://transpect.le-tex.de/api/upload_file',
+                      type: 'POST',
+                      data: formData,
+                      async:true,
+                      success: function (data){
+                        $('p#status > span').html(data['status']);
+                          var callbackURI = data['callback_uri'];
+                          initStatusRequest(callbackURI, filename);
+                      },
+                      "beforeSend": function(xhr){
+                          xhr.setRequestHeader("Authorization", basicHTTPAuthString('admin', 'admin'));
+                      },
+                      cache: false,
+                      contentType:false,
+                      processData:false
+                  })
+                })
+                <!--callback request to get information about the conversion status-->
+                var timedrequest = null;
+                function initStatusRequest(URI, filename){
+                statusRequest = function(){
+                          $.ajax({
+                            url:URI,
+                            type:'GET',
+                            async: true,
+                            success: function (data){
+                                $('p#status > span').html(data['status']);
+                                console.log(timedrequest, 'timedrequest');
+                                if (data["status"]){
+                               /* data[status] to get the actual conversion state */
+                                  if (timedrequest != null){
+                                    if(data["status"]==="failure"){
+                                        clearInterval(timedrequest);                        
+                                    }
+                                    else if(data["status"]==="success"){
+                                        /* get the links to the conversion results */
+                                        clearInterval(timedrequest);
+                                        getResultList(data['result_list_uri']);
+                                    }
+                                  }
+                               }
+                            },
+                           "beforeSend": function(xhr){
+                              xhr.setRequestHeader("Authorization", basicHTTPAuthString('admin', 'admin'));
+                           }
+                          });
+                       }
+                timedrequest = setInterval(statusRequest, 3000);
+                }
+            
+                function getResultList(URI){
+                  $.ajax({
+                            url: URI,
+                            type:'GET',
+                            async:true,
+                            success: function (data){
+                             if(data && data["files"]){
+                              var files = data["files"];
+                              console.log(files, 'files');
+                              for(var file in files){
+                                if(files.hasOwnProperty(file)){
+                                var fileLink = files[file]["download_uri"];
+                                if (file.includes('.epub')){
+                                    var fileLinkObject = $("<a role='button' target=\"_blank\" href=\"" + fileLink + "\">"+ fileLink +"</a>");
+                                $('#download > span').html(fileLinkObject);
+                                }
+                               }
+                              }
+                             }
+                            },
+                            "beforeSend": function(xhr){
+                              xhr.setRequestHeader("Authorization", basicHTTPAuthString('admin', 'admin'));
+                           }
+                          });
+                }
+            })
+        </script>
+        <title>html2epub</title>
+    </head>
+    <body>
+        <header><h4>html2epub converter</h4></header>
+        <section>
+            <form enctype="multipart/form-data">
+                <input type="file" name="input_file"></input>
+                <button type="submit">Upload File</button>
+            </form>
+            <p id="status">Conversion Status: <span></span></p>
+            <p id="download">Result: <span></span></p>
+        </section>
+    </body>
+</html>
