@@ -2,6 +2,7 @@
 <p:declare-step xmlns:p="http://www.w3.org/ns/xproc"
     xmlns:c="http://www.w3.org/ns/xproc-step"
     xmlns:cx="http://xmlcalabash.com/ns/extensions"
+    xmlns:cxf="http://xmlcalabash.com/ns/extensions/fileutils"
     xmlns:epub="http://transpect.io/epubtools"
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns:tr="http://transpect.io"
@@ -125,10 +126,6 @@
       
       <p:unwrap match="/c:body"/>
       
-      <p:add-attribute match="/*" attribute-name="xml:base">
-        <p:with-option name="attribute-value" select="$input-uri"/>
-      </p:add-attribute>
-      
       <tr:store-debug>
         <p:with-option name="pipeline-step" select="concat('single-html/', replace($input-uri, '^.+/', ''))"/>
         <p:with-option name="active" select="$debug"/>
@@ -182,9 +179,38 @@
         <p:with-option name="debug-dir-uri" select="$debug-dir-uri"></p:with-option>
     </epub:convert>
     
-    <p:sink/>
-  
-    <tr:patch-svrl name="patch">
+    <p:group>
+      <p:variable name="input-uri" select="/c:result/@os-path">
+        <p:pipe port="result" step="locate-file"></p:pipe>
+      </p:variable>
+      
+      <p:choose>
+        <p:when test="contains($file, '.zip')">
+        <cx:message>
+          <p:with-option name="message" select="$file"></p:with-option>
+          <p:with-option name="log" select="'info'"></p:with-option>
+        </cx:message>
+          
+        <cx:message>
+          <p:with-option name="message" select="$input-uri"></p:with-option>
+          <p:with-option name="log" select="'info'"></p:with-option>
+        </cx:message>
+        <cx:message>
+          <p:with-option name="message" select="concat($input-uri, '.tmp/', replace(replace($file, '^.+/', ''), 'zip', 'epub'))"></p:with-option>
+          <p:with-option name="log" select="'info'"></p:with-option>
+        </cx:message>
+          <cxf:move name="move-epub-from-tmp-to-outdir">
+            <p:with-option name="href" select="concat('file:///',$input-uri,'.tmp/', replace(replace($file, '^.+/', ''), 'zip', 'epub'))"></p:with-option>
+            <p:with-option name="target" select="concat('file:///',replace($input-uri,'zip$', 'epub'))"></p:with-option>
+          </cxf:move>
+        </p:when>
+        <p:otherwise>
+          <p:sink/>
+        </p:otherwise>
+      </p:choose>
+    </p:group>
+
+  <tr:patch-svrl name="patch">
       <p:input port="source">
         <p:pipe port="result" step="srcpaths"/>
       </p:input>
