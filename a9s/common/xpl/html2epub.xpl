@@ -110,21 +110,32 @@
    
     <p:group name="html5-input">
       <p:variable name="input-uri" select="/*/@local-href"></p:variable>
-      
-      <p:add-attribute attribute-name="href" match="/*">
-        <p:input port="source">
-          <p:inline>
-            <c:request method="GET"/>
-          </p:inline>
-        </p:input>
-        <p:with-option name="attribute-value" select="$input-uri"/>
-      </p:add-attribute>
-      
-      <p:http-request/>
-      
-      <p:unescape-markup content-type="text/html"/>
-      
-      <p:unwrap match="/c:body"/>
+
+    <p:try>
+      <p:group>
+        <p:load>
+          <p:with-option name="href" select="$input-uri"/>
+        </p:load>
+      </p:group>
+      <p:catch>
+        <p:documentation>Use validator.nu for HTML5 parsing…</p:documentation>
+        <p:add-attribute attribute-name="href" match="/*">
+          <p:input port="source">
+            <p:inline>
+              <c:request method="GET"/>
+            </p:inline>
+          </p:input>
+          <p:with-option name="attribute-value" select="$input-uri"/>
+        </p:add-attribute>
+
+        <p:http-request/>
+
+        <p:unescape-markup content-type="text/html"/>
+
+        <p:unwrap match="/c:body"/>
+
+      </p:catch>
+    </p:try>
       
       <tr:store-debug>
         <p:with-option name="pipeline-step" select="concat('single-html/', replace($input-uri, '^.+/', ''))"/>
@@ -217,6 +228,7 @@
       </p:input>
       <p:input port="reports">
         <p:pipe port="report" step="sch_validate"/>
+        <p:pipe port="report" step="html52epub"/>
       </p:input>
       <p:with-option name="debug" select="$debug"/>
       <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
