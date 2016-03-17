@@ -85,7 +85,7 @@
           />
         </tr:file-uri>
       </p:when>
-      <p:when test="contains($file, '.html')">
+      <p:when test="contains($file, '.html') or contains($file, '.xhtml')">
         <tr:file-uri name="html-file">
           <p:with-option name="filename" select="$file"></p:with-option>
         </tr:file-uri>
