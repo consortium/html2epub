@@ -71,6 +71,8 @@ html2epub:
 	@echo "Makefile target: html2epub"
 	@echo ""
 	HEAP=$(HEAP) $(CALABASH) -D \
+		-o htmlreport=$(OUT_DIR_PATH)/report.xhtml \
+		-o result=$(DEBUG_DIR)/result.xml \
 		$(call get-uri,a9s/common/xpl/html2epub.xpl)\
 		file=$(IN_FILE_COPY) \
 		status-dir-uri=$(STATUS_DIR_URI) \

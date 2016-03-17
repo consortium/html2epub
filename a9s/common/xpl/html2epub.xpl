@@ -177,6 +177,7 @@
         <p:with-option name="clean-target-dir" select="'no'"></p:with-option>
         <p:with-option name="status-dir-uri" select="$status-dir-uri"></p:with-option>
         <p:with-option name="debug-dir-uri" select="$debug-dir-uri"></p:with-option>
+        <p:with-option name="debug" select="$debug"/>
     </epub:convert>
     
     <p:group>
