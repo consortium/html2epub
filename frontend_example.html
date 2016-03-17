@@ -83,7 +83,7 @@
                               for(var file in files){
                                 if(files.hasOwnProperty(file)){
                                 var fileLink = files[file]["download_uri"];
-                                if (fileLink.match(/file=.+html&input_file|file=.+epub&input_file/)){
+                                if (fileLink.match(/file=.+\.(x?html|epub|zip)&input_file/)){
                                 var fileLinkObject = $("<a role='button' target=\"_blank\" href=\"" + fileLink + "\">"+ fileLink.replace(/^.+?file=/, '').replace(/&input_file=.+$/, '') +"</a><br></br>");
                                 $('#download > span').append(fileLinkObject);
                                 }
