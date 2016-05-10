@@ -1,5 +1,5 @@
 # check for cygwin, get paths
-ifeq ($(shell uname -o),Cygwin)
+ifeq ($(findstring CYGWIN,$(shell uname)),CYGWIN)
 get-fullpath	= $(shell cygpath -ma "$(1)")
 get-uri		= $(shell echo file:///$(call get-fullpath,$(1))  | sed -r 's/ /%20/g')
 else
@@ -24,7 +24,7 @@ HEAP		= 1024m
 DEVNULL		= $(call get-fullpath,/dev/null)
 
 usage:
-
+	@echo $(call get-uri,a9s/common/xpl/html2epub.xpl)
 	@echo "Usage (one of):"
 	@echo "  make conversion IN_FILE=myfile.docx"
 	@echo "  make conversion IN_FILE=myfile.idml"
