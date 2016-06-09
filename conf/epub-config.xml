@@ -39,7 +39,7 @@
     Please note that due to limitations of Relax NG (or of the schema designer),
     the required order of type declarations is toc, landmarks, everything else.
     -->
-	  <type name="toc" heading="Inhaltsverzeichnis" hidden="true" fallback-id-for-landmark="rendered_toc"/>
+	  <type name="toc" heading="Table of Contents" hidden="true" fallback-id-for-landmark="rendered_toc"/>
 	  <!--
       There may be an optional hidden attribute for landmarks and toc (values: true|false,
       default: true). It applies only to generated nav elements.
