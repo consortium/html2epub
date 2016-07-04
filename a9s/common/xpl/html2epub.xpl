@@ -17,8 +17,8 @@
     </p:output>
     <p:serialization port="htmlreport" omit-xml-declaration="false" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
   
-    <p:option name="file" required="true"></p:option>
-    <p:option name="debug" required="false" select="'no'"></p:option>
+    <p:option name="file" required="true"/>
+    <p:option name="debug" required="false" select="'no'"/>
     <p:option name="debug-dir-uri" required="false" select="'debug'"/>
     <p:option name="status-dir-uri" required="false" select="'debug'"/>
     <p:option name="extract-dir" required="false" select="''"/>
@@ -87,7 +87,7 @@
       </p:when>
       <p:when test="contains($file, '.html') or contains($file, '.xhtml')">
         <tr:file-uri name="html-file">
-          <p:with-option name="filename" select="$file"></p:with-option>
+          <p:with-option name="filename" select="$file"/>
         </tr:file-uri>
       </p:when>
       <p:otherwise>
@@ -111,7 +111,7 @@
     <p:group name="html5-input">
     <p:variable name="input-uri" select="/*/@local-href"/>
 
-    <p:try name="test">
+    <p:try>
       <p:group>
         <p:load>
           <p:with-option name="href" select="$input-uri"/>
@@ -137,7 +137,7 @@
       </p:catch>
     </p:try>
       
-      <tr:store-debug name="debug-test">
+      <tr:store-debug name="group-output">
         <p:with-option name="pipeline-step" select="concat('single-html/', replace($input-uri, '^.+/', ''))"/>
         <p:with-option name="active" select="$debug"/>
         <p:with-option name="base-uri" select="$debug-dir-uri"/>
@@ -151,9 +151,9 @@
         <p:with-option name="href" select="concat(replace($input-uri,'(^.*/).*', '$1'), 'com.apple.ibooks.display-options.xml')"/>
       </p:store>
       
-      <p:identity name="group-output">
+      <p:identity name="group-identity-output">
         <p:input port="source">
-          <p:pipe port="result" step="debug-test"/>
+          <p:pipe port="result" step="group-output"/>
         </p:input>
       </p:identity>
     </p:group>
@@ -192,7 +192,26 @@
   
   <p:sink/>
 
-    <epub:convert name="html52epub">
+  <p:xslt name="insert-metadata" cx:depends-on="html5-output">
+    <p:input port="source">
+      <p:document href="http://this.transpect.io/conf/epub-config.xml"/>
+      <p:pipe port="result" step="html5-output"/>
+    </p:input>
+    <p:input port="stylesheet">
+      <p:document href="http://this.transpect.io/a9s/common/xsl/insert-metadata.xsl"/>
+    </p:input>
+    <p:input port="parameters">
+      <p:empty/>
+    </p:input>
+  </p:xslt>
+
+  <tr:store-debug>
+    <p:with-option name="pipeline-step" select="'single-html/insert-metadata.xml'"/>
+    <p:with-option name="active" select="$debug"/>
+    <p:with-option name="base-uri" select="$debug-dir-uri"/>
+  </tr:store-debug>
+
+    <epub:convert name="html52epub" cx:depends-on="insert-metadata">
       <p:input port="source">
         <p:pipe port="result" step="html5-output"/>
       </p:input>
@@ -200,7 +219,7 @@
             <p:document href="http://this.transpect.io/conf/hierarchy.xml"/>
         </p:input>
         <p:input port="meta">
-          <p:document href="http://this.transpect.io/conf/epub-config.xml"/>
+          <p:pipe port="result" step="insert-metadata"/>
         </p:input>
         <p:with-option name="target" select="'EPUB3'"/>
         <p:with-option name="terminate-on-error" select="'yes'"/>
@@ -212,7 +231,7 @@
     
     <p:group>
       <p:variable name="input-uri" select="/c:result/@os-path">
-        <p:pipe port="result" step="locate-file"></p:pipe>
+        <p:pipe port="result" step="locate-file"/>
       </p:variable>
       
       <p:choose>
