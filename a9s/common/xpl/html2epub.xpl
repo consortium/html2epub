@@ -10,10 +10,10 @@
     name="html2epub">
   
     <p:output port="result" primary="true">
-      <p:pipe port="result" step="html52epub"></p:pipe>
+      <p:pipe port="result" step="html52epub"/>
     </p:output>
     <p:output port="htmlreport" sequence="true">
-      <p:pipe port="result" step="patch"></p:pipe>
+      <p:pipe port="result" step="patch"/>
     </p:output>
     <p:serialization port="htmlreport" omit-xml-declaration="false" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
   
@@ -51,7 +51,7 @@
     <p:sink/>
    
     <tr:file-uri name="locate-file">
-      <p:with-option name="filename" select="$file"></p:with-option>
+      <p:with-option name="filename" select="$file"/>
     </tr:file-uri>
   
     <tr:store-debug>
@@ -173,7 +173,7 @@
     
     <tr:validate-with-schematron name="sch_validate">
       <p:input port="html-in">
-        <p:pipe port="result" step="html5-output"></p:pipe>
+        <p:pipe port="result" step="html5-output"/>
       </p:input>
       <p:input port="parameters">
         <p:pipe port="result" step="paths"/>
@@ -197,16 +197,16 @@
         <p:pipe port="result" step="html5-output"/>
       </p:input>
         <p:input port="conf">
-            <p:document href="http://this.transpect.io/conf/hierarchy.xml"></p:document>
+            <p:document href="http://this.transpect.io/conf/hierarchy.xml"/>
         </p:input>
         <p:input port="meta">
-          <p:document href="http://this.transpect.io/conf/epub-config.xml"></p:document>
+          <p:document href="http://this.transpect.io/conf/epub-config.xml"/>
         </p:input>
-        <p:with-option name="target" select="'EPUB3'"></p:with-option>
-        <p:with-option name="terminate-on-error" select="'yes'"></p:with-option>
-        <p:with-option name="clean-target-dir" select="'no'"></p:with-option>
-        <p:with-option name="status-dir-uri" select="$status-dir-uri"></p:with-option>
-        <p:with-option name="debug-dir-uri" select="$debug-dir-uri"></p:with-option>
+        <p:with-option name="target" select="'EPUB3'"/>
+        <p:with-option name="terminate-on-error" select="'yes'"/>
+        <p:with-option name="clean-target-dir" select="'no'"/>
+        <p:with-option name="status-dir-uri" select="$status-dir-uri"/>
+        <p:with-option name="debug-dir-uri" select="$debug-dir-uri"/>
         <p:with-option name="debug" select="$debug"/>
     </epub:convert>
     
@@ -218,21 +218,21 @@
       <p:choose>
         <p:when test="contains($file, '.zip')">
         <cx:message>
-          <p:with-option name="message" select="$file"></p:with-option>
-          <p:with-option name="log" select="'info'"></p:with-option>
+          <p:with-option name="message" select="$file"/>
+          <p:with-option name="log" select="'info'"/>
         </cx:message>
           
         <cx:message>
-          <p:with-option name="message" select="$input-uri"></p:with-option>
-          <p:with-option name="log" select="'info'"></p:with-option>
+          <p:with-option name="message" select="$input-uri"/>
+          <p:with-option name="log" select="'info'"/>
         </cx:message>
         <cx:message>
-          <p:with-option name="message" select="concat($input-uri, '.tmp/', replace(replace($file, '^.+/', ''), 'zip', 'epub'))"></p:with-option>
-          <p:with-option name="log" select="'info'"></p:with-option>
+          <p:with-option name="message" select="concat($input-uri, '.tmp/', replace(replace($file, '^.+/', ''), 'zip', 'epub'))"/>
+          <p:with-option name="log" select="'info'"/>
         </cx:message>
           <cxf:move name="move-epub-from-tmp-to-outdir">
-            <p:with-option name="href" select="concat('file:///',$input-uri,'.tmp/', replace(replace($file, '^.+/', ''), 'zip', 'epub'))"></p:with-option>
-            <p:with-option name="target" select="concat('file:///',replace($input-uri,'zip$', 'epub'))"></p:with-option>
+            <p:with-option name="href" select="concat('file:///',$input-uri,'.tmp/', replace(replace($file, '^.+/', ''), 'zip', 'epub'))"/>
+            <p:with-option name="target" select="concat('file:///',replace($input-uri,'zip$', 'epub'))"/>
           </cxf:move>
         </p:when>
         <p:otherwise>
