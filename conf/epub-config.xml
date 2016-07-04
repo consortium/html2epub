@@ -6,7 +6,8 @@
   layout="reflowable" 
   css-handling="regenerated-per-split"
   html-subdir-name="text" 
-  indent="selective">
+  indent="selective"
+  variant="ORIGINAL-CSS">
 	<!-- layout: reflowable|fixed
 	       (default: reflowable; fixed only permitted for KF8 and EPUB3 layouts)
 	     format: EPUB2|EPUB3|KF8 (default: EPUB3)
