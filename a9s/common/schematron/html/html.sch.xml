@@ -22,7 +22,7 @@
  
   <pattern id="validating_declarations">
     <rule context="html:html">
-      <assert test="@property ='http://scholarly-html.org/schtml'" id="xml_declaration" role="warning">Your HTML needs a property attribute with the URI identifier 'http://scholarly-html.org/schtml' as the value.</assert>
+      <assert test="@property ='http://scholarly-html.org/schtml'" id="xml_uri_identifier" role="warning">Your HTML needs a property attribute with the URI identifier 'http://scholarly-html.org/schtml' as the value.</assert>
       <let name="declaration" value="if (starts-with($unparsed, '&lt;?xml')) then concat(substring-before($unparsed, '?>'), '?>') else ''"/>
       <assert test="starts-with($unparsed, '&lt;?xml')" id="xml_declaration" role="warning">Your XHTML document must start with an
         XML declaration.</assert>
