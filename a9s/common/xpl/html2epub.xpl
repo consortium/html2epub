@@ -109,9 +109,9 @@
     </tr:store-debug>  
    
     <p:group name="html5-input">
-      <p:variable name="input-uri" select="/*/@local-href"></p:variable>
+    <p:variable name="input-uri" select="/*/@local-href"/>
 
-    <p:try>
+    <p:try name="test">
       <p:group>
         <p:load>
           <p:with-option name="href" select="$input-uri"/>
@@ -137,11 +137,25 @@
       </p:catch>
     </p:try>
       
-      <tr:store-debug>
+      <tr:store-debug name="debug-test">
         <p:with-option name="pipeline-step" select="concat('single-html/', replace($input-uri, '^.+/', ''))"/>
         <p:with-option name="active" select="$debug"/>
         <p:with-option name="base-uri" select="$debug-dir-uri"/>
       </tr:store-debug>
+      
+      <p:load name="load-xml-for-fixed-ibooks-view">
+        <p:with-option name="href" select="'http://transpect.io/epubtools/modules/create-ocf/xml/com.apple.ibooks.display-options.xml'"/>
+      </p:load>
+      
+      <p:store name="store-xml-for-fixed-ibooks-view">
+        <p:with-option name="href" select="concat(replace($input-uri,'(^.*/).*', '$1'), 'com.apple.ibooks.display-options.xml')"/>
+      </p:store>
+      
+      <p:identity name="group-output">
+        <p:input port="source">
+          <p:pipe port="result" step="debug-test"/>
+        </p:input>
+      </p:identity>
     </p:group>
     <p:identity name="html5-output"/>
   
@@ -176,7 +190,12 @@
         <p:with-option name="base-uri" select="$debug-dir-uri"/>
       </tr:store-debug>
   
+  <p:sink/>
+
     <epub:convert name="html52epub">
+      <p:input port="source">
+        <p:pipe port="result" step="html5-output"/>
+      </p:input>
         <p:input port="conf">
             <p:document href="http://this.transpect.io/conf/hierarchy.xml"></p:document>
         </p:input>
